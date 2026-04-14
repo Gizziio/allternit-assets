@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Allternit x Onyx UI Port Plan v2</title>
+  <style>
+    :root {
+      --bg: #f4eee6;
+      --paper: rgba(255, 251, 246, 0.92);
+      --paper-2: #fffaf5;
+      --ink: #221813;
+      --muted: #705c50;
+      --line: rgba(74, 51, 39, 0.16);
+      --accent: #c56b42;
+      --accent-2: #24544f;
+      --accent-3: #d2a85c;
+      --shadow: 0 30px 70px rgba(44, 28, 18, 0.12);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 0% 0%, rgba(197,107,66,0.12), transparent 28%),
+        radial-gradient(circle at 100% 0%, rgba(36,84,79,0.11), transparent 26%),
+        linear-gradient(180deg, #faf5ee 0%, var(--bg) 100%);
+    }
+
+    .wrap {
+      width: min(1320px, calc(100vw - 40px));
+      margin: 0 auto;
+      padding: 28px 0 64px;
+    }
+
+    .hero, .panel, .card, .phase, .shell {
+      border: 1px solid var(--line);
+      background: var(--paper);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .hero {
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero:after {
+      content: "";
+      position: absolute;
+      width: 420px;
+      height: 420px;
+      right: -120px;
+      bottom: -180px;
+      background: radial-gradient(circle, rgba(197,107,66,0.18), transparent 64%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+      color: var(--accent-2);
+      background: rgba(36,84,79,0.08);
+    }
+
+    h1, h2, h3, p { margin: 0; }
+    h1 {
+      margin-top: 16px;
+      font-family: "Iowan Old Style", "Palatino Linotype", serif;
+      font-size: clamp(38px, 5vw, 74px);
+      line-height: 0.94;
+      letter-spacing: -0.04em;
+      max-width: 10ch;
+    }
+
+    .lede {
+      margin-top: 16px;
+      max-width: 74ch;
+      color: var(--muted);
+      line-height: 1.58;
+      font-size: 18px;
+    }
+
+    .hero-grid, .card-grid, .compare, .timeline {
+      display: grid;
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .hero-grid { grid-template-columns: 1.15fr 0.85fr; }
+    .card-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .compare { grid-template-columns: 1fr 1fr; }
+    .timeline { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .panel {
+      padding: 20px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.56), rgba(255,250,245,0.9));
+    }
+
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--paper-2);
+      padding: 16px;
+    }
+
+    .metric .num {
+      font-size: 28px;
+      line-height: 1;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .metric .label {
+      margin-top: 8px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .status {
+      display: grid;
+      gap: 12px;
+    }
+
+    .status-item {
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      gap: 12px;
+      align-items: center;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .tag {
+      border-radius: 999px;
+      padding: 8px 12px;
+      text-align: center;
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .tag.current { background: rgba(197,107,66,0.12); color: #8d4424; }
+    .tag.target { background: rgba(36,84,79,0.12); color: #24544f; }
+    .tag.key { background: rgba(210,168,92,0.18); color: #7a5b22; }
+
+    .section {
+      margin-top: 30px;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .section-title h2 {
+      font-size: 25px;
+      letter-spacing: -0.03em;
+    }
+
+    .section-title .note {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .card {
+      padding: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.52), rgba(255,250,245,0.9));
+    }
+
+    .pill {
+      display: inline-block;
+      margin-bottom: 10px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+      color: var(--accent-2);
+    }
+
+    .card h3 {
+      font-size: 22px;
+      line-height: 1.05;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: var(--muted);
+      line-height: 1.52;
+      font-size: 15px;
+    }
+
+    .mini-list {
+      list-style: none;
+      padding: 0;
+      margin: 14px 0 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .mini-list li {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding-top: 8px;
+      border-top: 1px dashed var(--line);
+      font-size: 14px;
+      line-height: 1.46;
+    }
+
+    .mini-list li:first-child { border-top: 0; padding-top: 0; }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      flex: none;
+      border-radius: 50%;
+      margin-top: 5px;
+      background: var(--accent);
+    }
+
+    .shell {
+      padding: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.56), rgba(255,249,242,0.92));
+    }
+
+    .shell-frame {
+      display: grid;
+      grid-template-columns: 88px 260px 1fr;
+      gap: 12px;
+      min-height: 460px;
+    }
+
+    .rail, .sidebar, .content {
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: var(--paper-2);
+      padding: 14px;
+    }
+
+    .rail {
+      display: grid;
+      grid-auto-rows: max-content;
+      gap: 10px;
+      align-content: start;
+      background: linear-gradient(180deg, #221813, #32211a);
+      color: #f8efe6;
+    }
+
+    .rail-chip {
+      height: 44px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .rail-chip.active { background: rgba(197,107,66,0.28); }
+
+    .sidebar {
+      display: grid;
+      grid-template-rows: auto auto auto 1fr;
+      gap: 12px;
+    }
+
+    .bar {
+      height: 12px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(36,84,79,0.18), rgba(197,107,66,0.2));
+    }
+
+    .block {
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.66);
+      padding: 12px;
+    }
+
+    .block h4 {
+      margin: 0 0 8px;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .item {
+      height: 34px;
+      border-radius: 10px;
+      background: rgba(36,84,79,0.06);
+      margin-top: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .item:after {
+      content: "";
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      width: 55%;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(34,24,19,0.16);
+    }
+
+    .content {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 12px;
+    }
+
+    .content-top, .content-bottom, .stream-box {
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.62);
+      padding: 14px;
+    }
+
+    .stream-box {
+      display: grid;
+      gap: 10px;
+    }
+
+    .stream-step, .answer-line {
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 14px;
+      line-height: 1.4;
+      border: 1px solid var(--line);
+      background: #fffdf9;
+    }
+
+    .stream-step {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      width: fit-content;
+      background: rgba(36,84,79,0.08);
+    }
+
+    .pulse {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 0 rgba(197,107,66,0.5);
+      animation: pulse 1.6s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(197,107,66,0.45); }
+      70% { box-shadow: 0 0 0 10px rgba(197,107,66,0); }
+      100% { box-shadow: 0 0 0 0 rgba(197,107,66,0); }
+    }
+
+    .compare-box {
+      padding: 18px;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .compare-box h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .compare-box p {
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 15px;
+      margin-bottom: 12px;
+    }
+
+    .compare-box ul {
+      margin: 0;
+      padding-left: 18px;
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    .phase {
+      padding: 18px;
+      min-height: 250px;
+    }
+
+    .phase-num {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--ink);
+      color: #fff6ee;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .phase h3 {
+      font-size: 21px;
+      margin-bottom: 8px;
+    }
+
+    .phase p {
+      color: var(--muted);
+      line-height: 1.52;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .phase ul {
+      margin: 0;
+      padding-left: 18px;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .footer {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 1160px) {
+      .hero-grid, .card-grid, .compare, .timeline, .shell-frame, .metric-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .wrap { width: min(100vw - 24px, 1320px); padding-top: 18px; }
+      .hero, .panel, .card, .phase, .shell, .compare-box { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Plan Revision • Preserve The Rail • Add Streaming</div>
+      <h1>Enhance Allternit with Onyx patterns without flattening its shell</h1>
+      <p class="lede">
+        The updated direction is to keep the existing Allternit left shell rail and workstation identity. We are not replacing it with a generic sidebar.
+        We are adding the pieces Onyx handles better: work resumption, sessions, inline streaming, source trust, and tighter chat operations.
+      </p>
+
+      <div class="hero-grid">
+        <div class="panel">
+          <div class="metric-row">
+            <div class="metric"><div class="num">7</div><div class="label">Core ports</div></div>
+            <div class="metric"><div class="num">1</div><div class="label">Rail preserved</div></div>
+            <div class="metric"><div class="num">3</div><div class="label">Session layers</div></div>
+            <div class="metric"><div class="num">4</div><div class="label">Build phases</div></div>
+          </div>
+        </div>
+        <div class="panel status">
+          <div class="status-item">
+            <div class="tag current">Current</div>
+            <div>Allternit has a strong shell and broad surface area, but weaker work resumption, session clarity, and response legibility.</div>
+          </div>
+          <div class="status-item">
+            <div class="tag key">Key Change</div>
+            <div>Keep the rail. Add Onyx-style workflow helpers and packet-level streaming behavior around it.</div>
+          </div>
+          <div class="status-item">
+            <div class="tag target">Target</div>
+            <div>More operational, more trustworthy, more resumable, and more alive during response generation.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <h2>How It Should Look</h2>
+        <div class="note">Allternit rail stays. Sidebar content and chat behavior get upgraded.</div>
+      </div>
+      <div class="shell">
+        <div class="shell-frame">
+          <div class="rail">
+            <div class="rail-chip active">Chat</div>
+            <div class="rail-chip">Cowork</div>
+            <div class="rail-chip">Code</div>
+            <div class="rail-chip">Browser</div>
+            <div class="rail-chip">Flows</div>
+            <div class="rail-chip">Tools</div>
+            <div class="rail-chip">More</div>
+          </div>
+
+          <div class="sidebar">
+            <div class="bar"></div>
+            <div class="block">
+              <h4>Quick Access</h4>
+              <div class="item"></div>
+              <div class="item"></div>
+            </div>
+            <div class="block">
+              <h4>Recents</h4>
+              <div class="item"></div>
+              <div class="item"></div>
+              <div class="item"></div>
+            </div>
+            <div class="block">
+              <h4>Pinned Agents / Projects</h4>
+              <div class="item"></div>
+              <div class="item"></div>
+              <div class="item"></div>
+            </div>
+          </div>
+
+          <div class="content">
+            <div class="content-top">
+              <strong style="display:block; margin-bottom:8px;">Chat Surface</strong>
+              <div class="stream-box">
+                <div class="stream-step"><span class="pulse"></span>Searching connected sources</div>
+                <div class="stream-step"><span class="pulse"></span>Reading 3 documents</div>
+                <div class="stream-step"><span class="pulse"></span>Running web search</div>
+                <div class="answer-line">Final answer begins streaming inline here while the system still shows provenance and tool progress above.</div>
+              </div>
+            </div>
+            <div class="content-bottom">
+              <strong style="display:block; margin-bottom:8px;">Answer Side Panel</strong>
+              Cited sources, found sources, uploaded files, branch controls, retry, regenerate, and session metadata all live as answer-adjacent tools.
+            </div>
+            <div class="content-bottom">
+              <strong style="display:block; margin-bottom:8px;">Composer</strong>
+              Cleaner main input with files, model, search, project context, and voice surfaced in a stricter hierarchy.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <h2>Priority Ports</h2>
+        <div class="note">Updated to reflect your feedback.</div>
+      </div>
+      <div class="card-grid">
+        <article class="card">
+          <div class="pill">Port 01</div>
+          <h3>Enhance the existing left shell rail</h3>
+          <p>Do not remove most of the existing left-side shell rail. Keep it intact and add workflow helpers into or adjacent to it.</p>
+          <ul class="mini-list">
+            <li><span class="dot"></span><span>Add recents and pinned sessions.</span></li>
+            <li><span class="dot"></span><span>Add pinned agents and project resume sections.</span></li>
+            <li><span class="dot"></span><span>Add faster chat/project search and clearer active states.</span></li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <div class="pill">Port 02</div>
+          <h3>Packet-level streaming and inline streaming</h3>
+          <p>Port the “live response anatomy” idea, not just token streaming. Show tool steps, search activity, reasoning, and answer flow inside the conversation.</p>
+          <ul class="mini-list">
+            <li><span class="dot"></span><span>Inline search/tool progress above the final answer.</span></li>
+            <li><span class="dot"></span><span>Stable token streaming with fewer layout jumps.</span></li>
+            <li><span class="dot"></span><span>Clear transition from work-in-progress to final response.</span></li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <div class="pill">Port 03</div>
+          <h3>Source and citation panel</h3>
+          <p>Attach evidence to answers. Make provenance visible enough that users can audit trust without leaving the chat flow.</p>
+          <ul class="mini-list">
+            <li><span class="dot"></span><span>Cited sources ordered by appearance.</span></li>
+            <li><span class="dot"></span><span>Found sources and uploaded files in one panel.</span></li>
+            <li><span class="dot"></span><span>Answer-linked inspection, not separate admin browsing.</span></li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <div class="pill">Port 04</div>
+          <h3>Session architecture</h3>
+          <p>Adopt a cleaner session model: sidebar session metadata, in-memory live session state, and optimistic creation for new sessions.</p>
+          <ul class="mini-list">
+            <li><span class="dot"></span><span>Separate session list from live message tree state.</span></li>
+            <li><span class="dot"></span><span>Create sessions optimistically before first reply lands.</span></li>
+            <li><span class="dot"></span><span>Auto-name sessions after first successful exchange.</span></li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <div class="pill">Port 05</div>
+          <h3>Tighter primary composer</h3>
+          <p>Keep Allternit’s power, but reorganize it so the main composer feels intentional and operational.</p>
+          <ul class="mini-list">
+            <li><span class="dot"></span><span>Promote files, search, model, voice, and project context.</span></li>
+            <li><span class="dot"></span><span>De-emphasize novelty or exploratory prompt actions.</span></li>
+            <li><span class="dot"></span><span>Unify send behavior and active-state feedback.</span></li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <div class="pill">Port 06</div>
+          <h3>Conversation control polish</h3>
+          <p>Make responses easier to retry, branch, regenerate, inspect, and recover after failure.</p>
+          <ul class="mini-list">
+            <li><span class="dot"></span><span>Edit and resend with less friction.</span></li>
+            <li><span class="dot"></span><span>Support message branching and alternate answer paths.</span></li>
+            <li><span class="dot"></span><span>Improve failure handling and “continue working” behavior.</span></li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <h2>Additional UI/UX Elements Worth Taking</h2>
+        <div class="note">Beyond the first recommendation set.</div>
+      </div>
+      <div class="card-grid">
+        <article class="card">
+          <div class="pill">Extra</div>
+          <h3>Command-style chat search</h3>
+          <p>Onyx has a command menu approach for finding sessions and projects quickly.</p>
+          <ul class="mini-list">
+            <li><span class="dot"></span><span>Search chats and projects from one palette.</span></li>
+            <li><span class="dot"></span><span>Use filters like “sessions” and “projects”.</span></li>
+            <li><span class="dot"></span><span>Create a new session or project from the same interface.</span></li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <div class="pill">Extra</div>
+          <h3>Auto-naming and animated rename feedback</h3>
+          <p>Onyx makes unnamed sessions feel temporary and then upgrades them as the conversation becomes real.</p>
+          <ul class="mini-list">
+            <li><span class="dot"></span><span>Show “unnamed” as a temporary state, not a dead end.</span></li>
+            <li><span class="dot"></span><span>Auto-name after the first exchange.</span></li>
+            <li><span class="dot"></span><span>Animate rename updates subtly in the session list.</span></li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <div class="pill">Extra</div>
+          <h3>Project-scoped chat grouping</h3>
+          <p>Onyx keeps project chats grouped and sorted by latest activity, which is a strong pattern for Allternit.</p>
+          <ul class="mini-list">
+            <li><span class="dot"></span><span>Recent chats inside project context.</span></li>
+            <li><span class="dot"></span><span>Move chats between projects cleanly.</span></li>
+            <li><span class="dot"></span><span>Let projects act as a real work container, not just metadata.</span></li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <h2>Session Model To Take From Onyx</h2>
+        <div class="note">This is probably the biggest architecture lesson.</div>
+      </div>
+      <div class="compare">
+        <div class="compare-box">
+          <h3>What Onyx appears to do</h3>
+          <p>It treats sessions as three related but separate systems.</p>
+          <ul>
+            <li>Server-backed session list for sidebar/history.</li>
+            <li>Local in-memory session store for live message trees and streaming state.</li>
+            <li>Optimistic pending sessions so a new chat exists immediately in the UI.</li>
+          </ul>
+        </div>
+        <div class="compare-box">
+          <h3>What Allternit should do</h3>
+          <p>Adopt the same separation, translated into Allternit’s shell and thread model.</p>
+          <ul>
+            <li>One durable session index for rail/sidebar/history.</li>
+            <li>One live session state layer for active thread rendering and packet flow.</li>
+            <li>One optimistic creation path so sessions appear before persistence finishes.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="compare" style="margin-top:16px;">
+        <div class="compare-box">
+          <h3>Behavior to port</h3>
+          <ul>
+            <li>Create a session before or at first send.</li>
+            <li>Navigate immediately to the new session route.</li>
+            <li>Auto-name after first meaningful reply.</li>
+            <li>Persist model override and session-level settings once the user actually uses them.</li>
+            <li>Keep per-session chat state: input, loading, streaming, uploading, tool-building.</li>
+          </ul>
+        </div>
+        <div class="compare-box">
+          <h3>Why it matters</h3>
+          <ul>
+            <li>Fixes “what is the current session?” ambiguity.</li>
+            <li>Makes sidebar state and live thread state agree more often.</li>
+            <li>Gives streaming a stable home instead of attaching it to transient UI state.</li>
+            <li>Makes branching, retry, and resume much easier to reason about.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <h2>Implementation Plan</h2>
+        <div class="note">Build order that matches your updated direction.</div>
+      </div>
+      <div class="timeline">
+        <article class="phase">
+          <div class="phase-num">1</div>
+          <h3>Session foundation</h3>
+          <p>Fix the session model before polishing the shell.</p>
+          <ul>
+            <li>Separate durable session list from live session state</li>
+            <li>Add optimistic session creation</li>
+            <li>Define session route + active thread rules</li>
+          </ul>
+        </article>
+        <article class="phase">
+          <div class="phase-num">2</div>
+          <h3>Rail enhancement</h3>
+          <p>Keep the rail and layer in work-resumption UX.</p>
+          <ul>
+            <li>Add recents and pinned sessions</li>
+            <li>Add pinned agents and project shortcuts</li>
+            <li>Add quick search / command palette entry</li>
+          </ul>
+        </article>
+        <article class="phase">
+          <div class="phase-num">3</div>
+          <h3>Streaming layer</h3>
+          <p>Move from plain text streaming to packet-aware inline streaming.</p>
+          <ul>
+            <li>Show search/tool/reasoning steps inline</li>
+            <li>Stabilize final answer streaming</li>
+            <li>Add source/citation side panel</li>
+          </ul>
+        </article>
+        <article class="phase">
+          <div class="phase-num">4</div>
+          <h3>Composer and polish</h3>
+          <p>Tighten the chat surface after the workflow foundation is in place.</p>
+          <ul>
+            <li>Restructure composer hierarchy</li>
+            <li>Add onboarding and answer controls</li>
+            <li>Normalize component behavior across shell and chat</li>
+          </ul>
+        </article>
+      </div>
+      <div class="footer">
+        Updated file: <strong>/Users/macbook/Desktop/allternit-onyx-ui-port-plan.html</strong><br />
+        This revision preserves the Allternit shell rail and elevates streaming plus session architecture to primary recommendations.
+      </div>
+    </section>
+  </div>
+</body>
+</html>

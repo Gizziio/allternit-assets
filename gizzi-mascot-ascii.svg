@@ -1,0 +1,61 @@
+<svg viewBox="0 0 140 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="140" height="100" fill="#0a0a0f"/>
+  
+  <!-- ASCII Art Text - Preserving exact layout from HTML -->
+  <text x="10" y="12" 
+        font-family="'Courier New', 'Courier', monospace" 
+        font-size="10" 
+        fill="#d97757"
+        xml:space="preserve">      ▄▄      </text>
+  
+  <text x="10" y="24" 
+        font-family="'Courier New', 'Courier', monospace" 
+        font-size="10" 
+        fill="#d4b08c"
+        xml:space="preserve">   ▄▄▄  ▄▄▄   </text>
+  
+  <text x="10" y="36" 
+        font-family="'Courier New', 'Courier', monospace" 
+        font-size="10" 
+        fill="#d4b08c"
+        xml:space="preserve"> ▄██████████▄ </text>
+  
+  <text x="10" y="48" 
+        font-family="'Courier New', 'Courier', monospace" 
+        font-size="10" 
+        fill="#d4b08c"
+        xml:space="preserve"> █  </text>
+  <text x="34" y="48" 
+        font-family="'Courier New', 'Courier', monospace" 
+        font-size="10" 
+        fill="#111318">●    ●</text>
+  <text x="82" y="48" 
+        font-family="'Courier New', 'Courier', monospace" 
+        font-size="10" 
+        fill="#d4b08c">  █ </text>
+  
+  <text x="10" y="60" 
+        font-family="'Courier New', 'Courier', monospace" 
+        font-size="10" 
+        fill="#d4b08c"
+        xml:space="preserve"> █  A : / / █ </text>
+  
+  <text x="10" y="72" 
+        font-family="'Courier New', 'Courier', monospace" 
+        font-size="10" 
+        fill="#d4b08c"
+        xml:space="preserve">  ▀████████▀  </text>
+  
+  <text x="10" y="84" 
+        font-family="'Courier New', 'Courier', monospace" 
+        font-size="10" 
+        fill="#8f6f56"
+        xml:space="preserve">   █ █  █ █   </text>
+  
+  <text x="10" y="96" 
+        font-family="'Courier New', 'Courier', monospace" 
+        font-size="10" 
+        fill="#8f6f56"
+        xml:space="preserve">   ▀ ▀  ▀ ▀   </text>
+</svg>
